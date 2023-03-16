@@ -55,7 +55,7 @@ public class BookService : IBookService
         return _mapper.Map<BookReadDto>(book);
     }
 
-    public async Task<BookReadDto> Update(BookUpdateDto bookUpdateDto)
+    public async Task<BookReadDto> UpdateAsync(BookUpdateDto bookUpdateDto)
     {
         var book = await _bookRepository.GetByIdAsync(bookUpdateDto.Id);
         var newBook = _mapper.Map(bookUpdateDto, book);

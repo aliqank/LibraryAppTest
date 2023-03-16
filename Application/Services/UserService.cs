@@ -80,7 +80,7 @@ public class UserService : IUserService
         return _mapper.Map<UserReadDto>(updatedUser);
     }
 
-    public async Task<List<User>> UpdateRangeUser(List<User> users)
+    public async Task<List<User>> UpdateRangeAsync(List<User> users)
     {
         return await _userRepository.UpdateRangeAsync(users);
     }

@@ -12,7 +12,7 @@ public interface IUserService
     Task<UserReadDto> CreateAsync(UserCreateDto userCreateDto);
     Task<UserReadDto> Update(UserUpdateDto userUpdateDto);
     Task<UserReadDto> UpdateUserRating(long id, RatingType newRating);
-    Task<List<User>> UpdateRangeUser(List<User> users);
+    Task<List<User>> UpdateRangeAsync(List<User> users);
     Task IncreaseUserLimitAsync(long userId);
     Task DecreaseUserLimitAsync(long userId);
     Task<List<User>> GetOverDueBorrowsAsync();

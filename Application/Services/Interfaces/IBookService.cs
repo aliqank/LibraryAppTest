@@ -9,6 +9,6 @@ public interface IBookService
     Task<BookReadDto> CreateAsync(BookCreateDto book);
     Task UpdateBookStatusAsync(long bookId, bool value);
     Task<BookReadDto> GetByIdAsync(long id);
-    Task<BookReadDto> Update(BookUpdateDto bookUpdateDto);
+    Task<BookReadDto> UpdateAsync(BookUpdateDto bookUpdateDto);
 
 }

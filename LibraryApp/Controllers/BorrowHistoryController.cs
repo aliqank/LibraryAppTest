@@ -46,7 +46,7 @@ public class BorrowHistoryController : ControllerBase
     {
         try
         {
-            return await _borrowHistoryService.ReturnBook(borrowReturnDto);
+            return await _borrowHistoryService.ReturnBookAsync(borrowReturnDto);
         }
         catch (Exception e)
         {

@@ -71,7 +71,7 @@ public class BorrowHistoryService : IBorrowHistoryService
         return _mapper.Map<BorrowReadDto>(newBorrowHistory);
     }
 
-    public async Task<BorrowReadDto> ReturnBook(BorrowReturnDto borrowReturnDto)
+    public async Task<BorrowReadDto> ReturnBookAsync(BorrowReturnDto borrowReturnDto)
     {
         var borrowHistory = await _borrowHistoryRepository.GetByIdAsync(borrowReturnDto.Id);
 
@@ -107,30 +107,6 @@ public class BorrowHistoryService : IBorrowHistoryService
         return _mapper.Map<BorrowReadDto>(borrowHistory);
     }
 
-    public async Task UpdateUserRating()
-    {
-        var overDueBorrows = await _userService.GetOverDueBorrowsAsync();
-        
-        var usersList = new List<User>();
-        
-        foreach (var user in overDueBorrows)
-        {
-            int daysDelayed = user.BorrowHistory
-                .Select(borrowHistory => (borrowHistory.DueDate - DateTime.UtcNow).Days)
-                .Max();
-            
-            if (daysDelayed is OneDayLate or OneWeekLate or TwoWeeksLate or OneMonthLate)
-            {
-                var userRating = user.Rating;
-                var newUserRating = GetRatingPenalty(userRating, daysDelayed);
-                user.Rating = newUserRating;
-                usersList.Add(user);
-            }
-        }
-
-        await _userService.UpdateRangeUser(usersList);
-    }
-
     private int CalculateDaysDelayed(DateTime returnedDate, DateTime takenDate, int borrowDurationInDays)
     {
         var dueDate = takenDate.AddDays(borrowDurationInDays);
@@ -144,7 +120,7 @@ public class BorrowHistoryService : IBorrowHistoryService
         return actualBorrowDurationInDays + borrowDurationInDays;
     }
 
-    private RatingType GetRatingPenalty(RatingType ratingType, int dueDate)
+    public RatingType GetRatingPenalty(RatingType ratingType, int dueDate)
     {
         var rating = dueDate switch
         {
