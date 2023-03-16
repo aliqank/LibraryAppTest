@@ -30,7 +30,7 @@ public class UserRatingJobService : IUserRatingJobService
         _userRatingJobScheduler.UpdateUserRating( () => UserRatingUpdater());
     }
     
-    private async Task UserRatingUpdater()
+    public async Task UserRatingUpdater()
     {
         var overDueBorrows = await _userService.GetOverDueBorrowsAsync();
         
