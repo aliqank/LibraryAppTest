@@ -23,18 +23,4 @@ public class BorrowHistoryRepository : RepositoryBase<BorrowHistory>,IBorrowHist
     {
          return await _context.BorrowHistories.FirstOrDefaultAsync(u => u.Id == id);
     }
-
-    public async Task<List<BorrowHistory>> GetOverDueBorrows()
-    {
-        return await _context.BorrowHistories
-            .Where(b => b.DueDate < DateTime.UtcNow)
-            .Where(b => !b.IsReturned)
-            .Where(b => !b.IsUpdated)
-            .GroupBy(b => b.UserId)
-            .Select(b=>b.First())
-            .ToListAsync();
-    }
-    
-    
-    
 }

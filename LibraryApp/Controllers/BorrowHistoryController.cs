@@ -33,21 +33,7 @@ public class BorrowHistoryController : ControllerBase
             return BadRequest(e.Message);
         }
     }
-
-    [HttpGet]
-    [Route("/Overdue")]
-    public async Task<ActionResult<List<BorrowReadDto>>> GetOverDueBorrows()
-    {
-        try
-        {
-            return await _borrowHistoryService.GetOverDueBorrowsAsync();
-        }
-        catch (Exception e)
-        {
-            return BadRequest(e.Message);
-        }
-    }
-
+    
     [HttpPost]
     public async Task<ActionResult<BorrowReadDto>> CreateAsync(BorrowHistoryCreateDto borrowHistory)
     {

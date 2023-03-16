@@ -13,7 +13,7 @@ public class AppMappingProfile : Profile
     public AppMappingProfile()
     {
         CreateMap<BorrowHistoryCreateDto, BorrowHistory>()
-            .ForMember(p => p.DueDate, 
+            .ForMember(p => p.DueDate,
                 o => o.MapFrom(
                     (s, p) => p.BorrowDate.AddDays(s.BorrowDurationInDays)));
         CreateMap<BorrowReturnDto, BorrowHistory>();

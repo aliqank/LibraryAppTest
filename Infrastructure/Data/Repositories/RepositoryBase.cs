@@ -49,8 +49,7 @@ public abstract class RepositoryBase<TEntity> : IRepositoryBase<TEntity> where T
             throw new Exception(e.Message, e.InnerException);
         }
     }
-
-
+    
     public async Task<List<TEntity>> UpdateRangeAsync(List<TEntity> entities)
     {
         await _context.BulkUpdateAsync(entities);

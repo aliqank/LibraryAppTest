@@ -1,4 +1,3 @@
-using Application.Dto.Book;
 using Application.Dto.BorrowHistory;
 using Application.Services.Interfaces;
 using AutoMapper;
@@ -41,13 +40,6 @@ public class BorrowHistoryService : IBorrowHistoryService
         return _mapper.Map<List<BorrowReadDto>>(borrowHistories);
     }
 
-    public async Task<List<BorrowReadDto>> GetOverDueBorrowsAsync()
-    {
-        var overDueBorrows = await _borrowHistoryRepository.GetOverDueBorrows();
-        var borrowReadDtos = _mapper.Map<List<BorrowReadDto>>(overDueBorrows);
-        return borrowReadDtos;
-    }
-
     public async Task<BorrowReadDto> CreateAsync(BorrowHistoryCreateDto borrowHistoryCreate)
     {
         var borrowHistory = _mapper.Map<BorrowHistory>(borrowHistoryCreate);
@@ -85,17 +77,18 @@ public class BorrowHistoryService : IBorrowHistoryService
 
         if (borrowHistory == null)
         {
-            throw new NullReferenceException("model is null");
+            throw new NullReferenceException("Model is null");
         }
-        var userId = borrowReturnDto.UserId;
-        var user = await _userService.GetByIdAsync(userId);
-
-        var bookId = borrowHistory.BookId;
 
         if (borrowHistory.IsReturned)
         {
             throw new InvalidOperationException("User already returned this book");
         }
+
+        var userId = borrowReturnDto.UserId;
+        var user = await _userService.GetByIdAsync(userId);
+
+        var bookId = borrowHistory.BookId;
 
         borrowHistory.IsReturned = true;
         borrowHistory.ReturnedDate = DateTime.UtcNow;
@@ -116,29 +109,26 @@ public class BorrowHistoryService : IBorrowHistoryService
 
     public async Task UpdateUserRating()
     {
-        var overDueBorrows = await _borrowHistoryRepository.GetOverDueBorrows();
+        var overDueBorrows = await _userService.GetOverDueBorrowsAsync();
         
-        var users = new List<User>();
+        var usersList = new List<User>();
         
-        foreach (var borrowHistory in overDueBorrows)
+        foreach (var user in overDueBorrows)
         {
-            var userId = borrowHistory.UserId;
+            int daysDelayed = user.BorrowHistory
+                .Select(borrowHistory => (borrowHistory.DueDate - DateTime.UtcNow).Days)
+                .Max();
             
-            var userRead = await _userService.GetByIdAsync(userId);
-            var user = _mapper.Map<User>(userRead);
-            
-            var daysDelayed = (borrowHistory.DueDate - DateTime.UtcNow).Days;
-            Console.WriteLine(daysDelayed);
             if (daysDelayed is OneDayLate or OneWeekLate or TwoWeeksLate or OneMonthLate)
             {
                 var userRating = user.Rating;
                 var newUserRating = GetRatingPenalty(userRating, daysDelayed);
                 user.Rating = newUserRating;
-                Console.WriteLine(newUserRating);
-                users.Add(user);
+                usersList.Add(user);
             }
         }
-        await _userService.UpdateRangeUser(users);
+
+        await _userService.UpdateRangeUser(usersList);
     }
 
     private int CalculateDaysDelayed(DateTime returnedDate, DateTime takenDate, int borrowDurationInDays)

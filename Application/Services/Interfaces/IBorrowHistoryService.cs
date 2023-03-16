@@ -9,7 +9,5 @@ public interface IBorrowHistoryService
     Task<List<BorrowReadDto>> GetAllAsync();
     Task<BorrowReadDto> CreateAsync(BorrowHistoryCreateDto borrowHistoryCreate);
     Task<BorrowReadDto> ReturnBook(BorrowReturnDto bookReturnDto);
-    Task<List<BorrowReadDto>> GetOverDueBorrowsAsync();
     Task UpdateUserRating();
-
 }

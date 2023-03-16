@@ -57,4 +57,18 @@ public class UserController : ControllerBase
             return BadRequest(e.Message);
         }
     }
+    
+    [HttpGet]
+    [Route("/Overdues")]
+    public async Task<ActionResult<List<User>>> GetOverDueBorrows()
+    {
+        try
+        {
+            return await _userService.GetOverDueBorrowsAsync();
+        }
+        catch (Exception e)
+        {
+            return BadRequest(e.Message);
+        }
+    }
 }

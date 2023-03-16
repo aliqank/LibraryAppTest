@@ -19,8 +19,7 @@ public class UserRatingJobScheduler : IUserRatingJobScheduler
         _recurringJobManager.AddOrUpdate(
             "User rating updater job",
             Job.FromExpression(job),
-            Cron.Minutely()
+            Cron.Daily()
         );
     }
-
 }

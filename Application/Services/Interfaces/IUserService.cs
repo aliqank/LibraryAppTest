@@ -15,4 +15,5 @@ public interface IUserService
     Task<List<User>> UpdateRangeUser(List<User> users);
     Task IncreaseUserLimitAsync(long userId);
     Task DecreaseUserLimitAsync(long userId);
+    Task<List<User>> GetOverDueBorrowsAsync();
 }

@@ -31,11 +31,10 @@ public class UserService : IUserService
         {
             throw new ArgumentNullException($"Data is null");
         }
-        
+
         var user = _mapper.Map<User>(userCreateDto);
         var newUser = await _userRepository.CreateAsync(user);
         return _mapper.Map<UserReadDto>(newUser);
-        
     }
 
     public async Task<UserReadDto> GetByIdAsync(long id)
@@ -43,8 +42,9 @@ public class UserService : IUserService
         var user = await _userRepository.GetByIdAsync(id);
         if (user == null)
         {
-            throw new ArgumentNullException($"{id}",$"user not found by {id} id");
+            throw new ArgumentNullException($"{id}", $"user not found by {id} id");
         }
+
         return _mapper.Map<UserReadDto>(user);
     }
 
@@ -59,8 +59,9 @@ public class UserService : IUserService
         var user = await _userRepository.GetByIdAsync(id);
         if (user == null)
         {
-            throw new ArgumentNullException($"{id}",$"user not found by {id} id");
+            throw new ArgumentNullException($"{id}", $"user not found by {id} id");
         }
+
         user.Rating = newRating;
         var newUser = await _userRepository.UpdateAsync(user);
         return _mapper.Map<UserReadDto>(newUser);
@@ -73,6 +74,7 @@ public class UserService : IUserService
         {
             throw new NullReferenceException($"user not found by {userUpdateDto.Id} id");
         }
+
         var newUser = _mapper.Map(userUpdateDto, user);
         var updatedUser = await _userRepository.UpdateAsync(newUser);
         return _mapper.Map<UserReadDto>(updatedUser);
@@ -111,5 +113,9 @@ public class UserService : IUserService
         await _userRepository.UpdateAsync(user);
     }
     
-    
+
+    public Task<List<User>> GetOverDueBorrowsAsync()
+    {
+        return _userRepository.GetOverDueBorrows();
+    }
 }

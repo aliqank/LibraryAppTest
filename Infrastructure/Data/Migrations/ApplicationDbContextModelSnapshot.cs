@@ -49,14 +49,14 @@ namespace Infrastructure.Data.Migrations
 
             modelBuilder.Entity("Domain.Entity.BorrowHistory", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<long>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
+                        .HasColumnType("bigint");
 
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("Id"));
 
-                    b.Property<int>("BookId")
-                        .HasColumnType("integer");
+                    b.Property<long>("BookId")
+                        .HasColumnType("bigint");
 
                     b.Property<DateTime>("BorrowDate")
                         .HasColumnType("timestamp with time zone");
@@ -73,16 +73,15 @@ namespace Infrastructure.Data.Migrations
                     b.Property<bool>("IsUpdated")
                         .HasColumnType("boolean");
 
-                    b.Property<DateTime?>("LastRatingUpdateDate")
-                        .HasColumnType("timestamp with time zone");
-
                     b.Property<DateTime?>("ReturnedDate")
                         .HasColumnType("timestamp with time zone");
 
-                    b.Property<int>("UserId")
-                        .HasColumnType("integer");
+                    b.Property<long>("UserId")
+                        .HasColumnType("bigint");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("UserId");
 
                     b.ToTable("BorrowHistories");
                 });
@@ -120,9 +119,20 @@ namespace Infrastructure.Data.Migrations
                         .IsRequired();
                 });
 
+            modelBuilder.Entity("Domain.Entity.BorrowHistory", b =>
+                {
+                    b.HasOne("Domain.Entity.User", null)
+                        .WithMany("BorrowHistory")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
             modelBuilder.Entity("Domain.Entity.User", b =>
                 {
                     b.Navigation("Books");
+
+                    b.Navigation("BorrowHistory");
                 });
 #pragma warning restore 612, 618
         }
